@@ -2,9 +2,9 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState, type ReactNode } from 'react';
 import {
   ArrowRight,
-  CalendarDays,
   ChartNoAxesColumn,
   CheckCircle2,
   ClipboardList,
@@ -74,7 +74,7 @@ function SectionTitle({
   action,
 }: {
   title: string;
-  action?: React.ReactNode;
+  action?: ReactNode;
 }) {
   return (
     <div className="flex items-center justify-between gap-3">
@@ -115,11 +115,19 @@ function InfoRow({
 export default function Saldo() {
   const { store, ready } = useKasir();
 
-  const todayKey = dayKey();
+  // Waktu sekarang hanya dibaca setelah komponen mount.
+  const [todayKey, setTodayKey] = useState<string | null>(null);
 
-  const today = store.sales.filter(
-    (sale) => dayKey(sale.time) === todayKey
-  );
+  useEffect(() => {
+    setTodayKey(dayKey(new Date()));
+  }, []);
+
+  const today =
+    todayKey === null
+      ? []
+      : store.sales.filter(
+          (sale) => dayKey(sale.time) === todayKey
+        );
 
   const todayAmount = today.reduce(
     (sum, sale) => sum + sale.total,
@@ -129,15 +137,19 @@ export default function Saldo() {
   const balance = availableSettlement(store);
   const total = totalSales(store);
   const withdrawnAmount = withdrawn(store);
-  const alreadyWithdrawn = withdrawnToday(store);
 
-  const withdrawalStatus = !ready
-    ? 'Memuat...'
-    : alreadyWithdrawn
-      ? 'Sudah ditarik'
-      : balance > 0
-        ? 'Tersedia'
-        : 'Belum tersedia';
+  // Hindari pemanggilan withdrawnToday saat prerender.
+  const alreadyWithdrawn =
+    todayKey !== null && withdrawnToday(store);
+
+  const withdrawalStatus =
+    !ready || todayKey === null
+      ? 'Memuat...'
+      : alreadyWithdrawn
+        ? 'Sudah ditarik'
+        : balance > 0
+          ? 'Tersedia'
+          : 'Belum tersedia';
 
   const withdrawalDescription = alreadyWithdrawn
     ? 'Penarikan berikutnya besok'
@@ -168,6 +180,7 @@ export default function Saldo() {
           <h1 className="text-[24px] font-extrabold leading-tight tracking-[-0.8px] sm:text-[30px]">
             Saldo & Kliring
           </h1>
+
           <p className="mt-1 text-[12px] text-[#718077] sm:text-[13px]">
             Ringkasan dana koperasi
           </p>
@@ -192,7 +205,7 @@ export default function Saldo() {
 
         <StatCard
           label="Penjualan hari ini"
-          value={ready ? rp(todayAmount) : '—'}
+          value={ready && todayKey !== null ? rp(todayAmount) : '—'}
           icon={TrendingUp}
         />
 
@@ -211,9 +224,9 @@ export default function Saldo() {
         />
       </div>
 
-      {/* RECONCILIATION & WITHDRAWAL STATUS */}
+      {/* REKONSILIASI DAN STATUS PENARIKAN */}
       <div className="mt-5 grid items-stretch gap-4 xl:grid-cols-2 xl:gap-5">
-        {/* RECONCILIATION */}
+        {/* REKONSILIASI */}
         <section className={`${panel} min-w-0 p-4 sm:p-6`}>
           <SectionTitle title="Rekonsiliasi Hari Ini" />
 
@@ -221,7 +234,7 @@ export default function Saldo() {
             <InfoRow
               label="Jumlah transaksi"
               value={
-                ready
+                ready && todayKey !== null
                   ? today.length.toLocaleString('id-ID')
                   : '—'
               }
@@ -229,7 +242,11 @@ export default function Saldo() {
 
             <InfoRow
               label="Nilai transaksi"
-              value={ready ? rp(todayAmount) : '—'}
+              value={
+                ready && todayKey !== null
+                  ? rp(todayAmount)
+                  : '—'
+              }
               strong
             />
           </div>
@@ -247,7 +264,7 @@ export default function Saldo() {
           </div>
         </section>
 
-        {/* WITHDRAWAL STATUS */}
+        {/* STATUS PENARIKAN */}
         <section className={`${panel} flex min-w-0 flex-col p-4 sm:p-6`}>
           <SectionTitle title="Status Penarikan" />
 
@@ -271,7 +288,7 @@ export default function Saldo() {
                 {withdrawalStatus}
               </p>
 
-              {ready && (
+              {ready && todayKey !== null && (
                 <p className="mt-1 text-[12px] leading-relaxed text-[#718077]">
                   {withdrawalDescription}
                 </p>
@@ -293,7 +310,7 @@ export default function Saldo() {
         </section>
       </div>
 
-      {/* WITHDRAWAL HISTORY */}
+      {/* RIWAYAT PENARIKAN */}
       <section className={`${panel} mt-5 min-w-0 overflow-hidden`}>
         <div className="flex items-center justify-between gap-3 border-b border-[#E6ECE7] px-4 py-4 sm:px-6 sm:py-5">
           <SectionTitle title="Riwayat Penarikan" />
@@ -371,12 +388,15 @@ export default function Saldo() {
                     <th className="w-[24%] px-6 py-3.5 font-semibold">
                       Tanggal
                     </th>
+
                     <th className="w-[23%] px-3 py-3.5 font-semibold">
                       ID Penarikan
                     </th>
+
                     <th className="w-[28%] px-3 py-3.5 font-semibold">
                       Catatan
                     </th>
+
                     <th className="w-[25%] px-6 py-3.5 text-right font-semibold">
                       Nominal
                     </th>
