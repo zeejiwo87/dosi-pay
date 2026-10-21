@@ -1,26 +1,444 @@
+
 @import "tailwindcss";
 
+/* =========================================
+   DOSI PAY — DESIGN SYSTEM
+========================================= */
+
 :root {
+  /* Brand */
+  --primary: #205b3d;
+  --primary-hover: #17492f;
+  --primary-light: #eaf5ef;
+
+  /* Background */
   --background: #ffffff;
-  --foreground: #171717;
+  --surface: #f8faf8;
+  --surface-soft: #f3f6f2;
+
+  /* Text */
+  --foreground: #1d2923;
+  --text-secondary: #6f7d73;
+  --text-muted: #98a49b;
+
+  /* Borders */
+  --border: #dee7e1;
+  --border-light: #edf1ee;
+
+  /* Components */
+  --radius: 14px;
+  --transition: 200ms ease;
 }
+
+/* =========================================
+   TAILWIND CONFIGURATION
+========================================= */
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-surface: var(--surface);
+
+  --font-sans: var(--font-dosi);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* =========================================
+   GLOBAL RESET
+========================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  min-height: 100%;
+
+  font-family: var(--font-dosi), sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  margin: 0;
+  padding: 0;
+
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+
+  font-family: var(--font-dosi), sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* IMPORTANT:
+   Do not set overflow-y: hidden on html/body.
+   The login page uses natural document scrolling.
+*/
+
+/* =========================================
+   FORM ELEMENTS
+========================================= */
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+input,
+select,
+textarea {
+  color: var(--foreground);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9caaa0;
+  opacity: 1;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+/* =========================================
+   TYPOGRAPHY
+========================================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-dosi), sans-serif;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* =========================================
+   SPLASH SCREEN
+========================================= */
+
+.splash-screen {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  padding: 32px 24px 80px;
+
+  overflow: hidden;
+
+  background: #fafbfa;
+}
+
+/* =========================================
+   SPLASH CONTENT
+========================================= */
+
+.splash-content {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  max-width: 420px;
+
+  padding: 24px 0;
+
+  text-align: center;
+}
+
+/* =========================================
+   SPLASH LOGO
+========================================= */
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  opacity: 0;
+
+  animation: dosiLogoIntro 900ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    forwards;
+}
+
+.splash-logo {
+  display: block;
+
+  width: 200px;
+  max-width: 65vw;
+  height: auto;
+
+  object-fit: contain;
+
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* =========================================
+   SPLASH LOADING
+========================================= */
+
+.splash-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 32px;
+
+  opacity: 0;
+
+  animation: dosiFadeUp 650ms
+    ease-out 500ms forwards;
+}
+
+.splash-loading p {
+  margin-top: 14px;
+
+  color: var(--text-muted);
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* =========================================
+   LOADING DOTS
+========================================= */
+
+.loading-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 18px;
+  gap: 7px;
+}
+
+.loading-dots span {
+  display: block;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: var(--primary);
+
+  animation: dosiDotLoading
+    1.2s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 150ms;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+/* =========================================
+   SPLASH FOOTER
+========================================= */
+
+.splash-footer {
+  position: absolute;
+
+  bottom: max(28px, env(safe-area-inset-bottom));
+  left: 50%;
+
+  width: 100%;
+  margin: 0;
+
+  transform: translateX(-50%);
+
+  color: #a0aba3;
+
+  font-size: 11px;
+  font-weight: 400;
+  text-align: center;
+
+  opacity: 0;
+
+  animation: dosiFooterIntro
+    700ms ease-out 900ms forwards;
+}
+
+/* =========================================
+   SPLASH ANIMATIONS
+========================================= */
+
+@keyframes dosiLogoIntro {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.94);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dosiFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dosiDotLoading {
+  0%,
+  70%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+
+  35% {
+    opacity: 1;
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes dosiFooterIntro {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* =========================================
+   RESPONSIVE SPLASH
+========================================= */
+
+@media (max-width: 640px) {
+  .splash-screen {
+    padding: 24px 24px 75px;
+  }
+
+  .splash-content {
+    padding: 16px 0;
+  }
+
+  .splash-logo {
+    width: 185px;
+  }
+
+  .splash-loading {
+    margin-top: 26px;
+  }
+
+  .splash-loading p {
+    font-size: 12px;
+  }
+
+  .splash-footer {
+    font-size: 10px;
+  }
+}
+
+/* Small height screens */
+
+@media (max-height: 560px) {
+  .splash-screen {
+    padding-top: 16px;
+    padding-bottom: 64px;
+  }
+
+  .splash-logo {
+    width: 150px;
+  }
+
+  .splash-loading {
+    margin-top: 16px;
+  }
+
+  .splash-footer {
+    bottom: 12px;
+  }
+}
+
+/* =========================================
+   ACCESSIBILITY
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .logo-container,
+  .splash-loading,
+  .splash-footer {
+    opacity: 1;
+  }
 }

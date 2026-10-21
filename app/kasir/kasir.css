@@ -1,0 +1,14 @@
+@keyframes dosiKasirIn{from{opacity:0;transform:translate3d(0,11px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes dosiBackdrop{from{opacity:0}to{opacity:1}}
+@keyframes dosiSheet{from{opacity:0;transform:translate3d(0,26px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes dosiSuccess{0%{transform:scale(.66);opacity:0}65%{transform:scale(1.09);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes dosiScan{0%{top:15%;opacity:.3}50%{opacity:1}100%{top:86%;opacity:.3}}
+@keyframes dosiPulse{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.09);opacity:1}}
+.dosi-page{animation:dosiKasirIn .38s cubic-bezier(.22,1,.36,1) both}
+.dosi-overlay{animation:dosiBackdrop .22s ease-out both}
+.dosi-sheet{animation:dosiSheet .34s cubic-bezier(.22,1,.36,1) both}
+.dosi-scanline{position:absolute;top:15%;left:12%;right:12%;height:2px;background:#4CD080;box-shadow:0 0 10px #4CD080;animation:dosiScan 1.35s ease-in-out infinite alternate}
+.dosi-success{animation:dosiSuccess .5s cubic-bezier(.2,1.2,.3,1) both}
+.dosi-pulse{animation:dosiPulse 1.7s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.dosi-page,.dosi-overlay,.dosi-sheet,.dosi-success,.dosi-scanline,.dosi-pulse{animation:none!important}html:focus-within{scroll-behavior:auto}}
+@media print{header,aside,nav,.print-hide{display:none!important}main{padding:0!important;background:white!important}.print-receipt{display:block!important;box-shadow:none!important;border:0!important;max-width:100%!important}}

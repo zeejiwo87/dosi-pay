@@ -1,0 +1,15 @@
+/* DOSI Pay Management. Scoped classes; no gradients. */
+@keyframes mgIn {from{opacity:0;transform:translate3d(0,9px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes mgSheet {from{opacity:.5;transform:translate3d(0,22px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes mgFade {from{opacity:0}to{opacity:1}}
+@keyframes mgDrawer {from{transform:translateX(-100%)}to{transform:translateX(0)}}
+.mg-content{animation:mgIn .42s cubic-bezier(.22,1,.36,1) both}
+.mg-enter{animation:mgIn .46s cubic-bezier(.22,1,.36,1) both}
+.mg-overlay{animation:mgFade .2s ease both}
+.mg-dialog{animation:mgSheet .32s cubic-bezier(.22,1,.36,1) both}
+.mg-drawer{animation:mgDrawer .3s cubic-bezier(.22,1,.36,1) both}
+.mg-side-link,.mg-touch{transition:background-color .18s ease,color .18s ease,transform .18s ease}
+.mg-touch:active{transform:scale(.96)}
+.mg-mini-bar{transform-origin:bottom;animation:mgGrow .7s cubic-bezier(.22,1,.36,1) both}
+@keyframes mgGrow{from{transform:scaleY(.08)}to{transform:scaleY(1)}}
+@media(prefers-reduced-motion:reduce){.mg-content,.mg-enter,.mg-overlay,.mg-dialog,.mg-drawer,.mg-mini-bar{animation:none!important}.mg-side-link,.mg-touch{transition:none!important}}
